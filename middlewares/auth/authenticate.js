@@ -5,10 +5,13 @@ const authenticate = (req, res, next) => {
   try {
     const decode = jwt.verify(token, "tokenok");
     if (decode) {
+      req.user = decode;
       return next();
+    } else {
+      res.status(401).send("ban chua dang nhap");
     }
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(401).send(error.message);
   }
 };
 
