@@ -7,7 +7,7 @@ app.use(express.json());
 
 // cai static files
 const publicPathDirectory = path.join(__dirname, "./public");
-app.use(express.static(publicPathDirectory));
+app.use("/public",express.static(publicPathDirectory));
 
 //dung router
 app.use("/api/v1", rootRouter);

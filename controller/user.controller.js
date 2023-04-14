@@ -82,7 +82,7 @@ const deleteUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password ,type} = req.body;
+  const { email, password, type } = req.body;
   //b1.tim user dang dap nhap bang email
   const user = await User.findOne({
     where: {
@@ -92,16 +92,30 @@ const login = async (req, res) => {
   console.log(user.email);
   if (user) {
     //b2.kiem tra mat khau chinh xac hay khong
-    const token = jwt.sign({email: user.email, type:user.type},"tokenok",{expiresIn:60 * 60})
+    const token = jwt.sign({ email: user.email, type: user.type }, "tokenok", {
+      expiresIn: 60 * 60,
+    });
     const isAuth = bcryptjs.compareSync(password, user.password);
     if (isAuth) {
-      res.status(200).send({ message: "dang nhap thanh cong",token });
+      res.status(200).send({ message: "dang nhap thanh cong", token });
     } else {
       res.status(500).send({ message: "dang nhap that bai" });
     }
   } else {
     res.status(500).send({ message: "khong tim thay nguoi dung" });
   }
+};
+
+const uploadAvatar = async (req, res) => {
+  const { file } = req;
+  const urlImage = `http://localhost:3000/${file.path}`;
+  const { user } = req;
+  const userFounded = await User.findOne({
+    email: user.email,
+  });
+  userFounded.avatar = urlImage;
+  await userFounded.save();
+  res.send(userFounded);
 };
 
 module.exports = {
@@ -111,4 +125,5 @@ module.exports = {
   updateUsers,
   deleteUser,
   login,
+  uploadAvatar,
 };
