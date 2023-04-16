@@ -1,9 +1,13 @@
 const { User } = require("../models/index");
 const bcryptjs = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 const createUSer = async (req, res) => {
   const { name, email, password, numberphone, type } = req.body;
   try {
+    //tao 1 avatar mac dinh
+    const avatarUrl = gravatar.url("abc@gmail.com");
+
     //tao ra 1 chuoi ngau nhien
     const salt = bcryptjs.genSaltSync(10);
 
@@ -15,6 +19,7 @@ const createUSer = async (req, res) => {
       email,
       password: hashPassword,
       numberphone,
+      avatar: avatarUrl,
       type,
     });
     res.status(200).send(newUser);
@@ -89,7 +94,6 @@ const login = async (req, res) => {
       email,
     },
   });
-  console.log(user.email);
   if (user) {
     //b2.kiem tra mat khau chinh xac hay khong
     const token = jwt.sign({ email: user.email, type: user.type }, "tokenok", {

@@ -1,13 +1,17 @@
 const express = require("express");
 const { sequelize } = require("./models");
 const { rootRouter } = require("./router/index");
+const Fingerprint = require("express-fingerprint");
 const app = express();
 const path = require("path");
 app.use(express.json());
 
+//cai dat fingerprint
+app.use(Fingerprint());
+
 // cai static files
 const publicPathDirectory = path.join(__dirname, "./public");
-app.use("/public",express.static(publicPathDirectory));
+app.use("/public", express.static(publicPathDirectory));
 
 //dung router
 app.use("/api/v1", rootRouter);
