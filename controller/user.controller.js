@@ -1,4 +1,4 @@
-const { User } = require("../models/index");
+const { User, sequelize } = require("../models/index");
 const bcryptjs = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
@@ -122,6 +122,21 @@ const uploadAvatar = async (req, res) => {
   res.send(userFounded);
 };
 
+const getAllTicket = async (req, res) => {
+  try {
+    const [results] = await sequelize.query(
+      `select u.name as user_name,fromSta.name as from_Station,toSta.name as to_Station from users u join tickets t on u.id= t.user_id
+                  join trips tr on tr.id = t.trip_id
+                            join stations as fromSta on fromSta.id = tr.fromStation
+                            join stations as toSta on toSta.id = tr.toStation;
+                            `
+    );
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   createUSer,
   getAllUsers,
@@ -130,4 +145,5 @@ module.exports = {
   deleteUser,
   login,
   uploadAvatar,
+  getAllTicket,
 };
